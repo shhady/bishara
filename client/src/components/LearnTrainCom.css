@@ -1,0 +1,35 @@
+.learn-train-com-container{
+    height: fit-content;
+    background: rgba(43, 42, 42, 0.6);
+    /* opacity: 0.4; */
+    box-shadow:12px 8px 16px 12px rgb(77, 76, 76), 0 8px 16px 12px rgba(43, 42, 42), 0 12px 24px 0 rgba(43, 42, 42);
+    color: white;
+}
+
+.cards3{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 80%;
+    margin: auto;
+    height: fit-content;
+
+}
+.card1, .card2, .card3{
+    margin-top: 20% ;
+    /* border: 1px solid black; */
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+       .cards3{
+        display: grid;
+        grid-template-columns: repeat(1,1fr);
+        width: 100%;
+        height: fit-content;
+       } 
+}

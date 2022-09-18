@@ -1,0 +1,38 @@
+.mainVideos{
+    height: 70vh;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonP{
+    height: 20%;
+    cursor: pointer;
+    text-align: right;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    width: 80%;
+    margin: auto;
+    background: rgb(161, 160, 160)
+}
+.buttonO{
+    height: 20%;
+    cursor: pointer;
+    width: 80%;
+    margin: auto;
+    /* margin-top: 1rem; */
+    text-align: right;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: rgb(161, 160, 160)
+}
+.buttonO:hover{
+    border: 2px solid black;
+}
+.buttonP:hover{
+    border: 2px solid black;
+}
