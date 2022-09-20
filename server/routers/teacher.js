@@ -123,19 +123,19 @@ router.post("/teachers/logoutAll", auth, async (req, res) => {
   }
 });
 
-// router.get("/teachers/:id", async (req, res) => {
-//   const _id = req.params.id;
+router.get("/teachers/:id", async (req, res) => {
+  const _id = req.params.id;
 
-//   try {
-//     const teacher = await Teacher.findById(_id);
-//     if (!teacher) {
-//       return res.status(404).send();
-//     }
-//     res.send(teacher);
-//   } catch (error) {
-//     res.status(500).send();
-//   }
-// });
+  try {
+    const teacher = await Teacher.findById(_id);
+    if (!teacher) {
+      return res.status(404).send();
+    }
+    res.send(teacher);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
 
 router.patch("/teachers/me", auth, async (req, res) => {
   const password = req.body.password;

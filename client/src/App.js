@@ -10,6 +10,7 @@ import Profile from "./components/Profile/Profile";
 import CreateCourse from "./components/Course/CreateCourse";
 import Teachers from "./components/Teachers";
 import Courses from "./components/Courses";
+import Messenger from "./components/Messenger/Messenger";
 // import Hero from "./components/Hero";
 export default function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -32,7 +33,13 @@ export default function App() {
         </Route>
         <Route path="/createcourse" exact component={CreateCourse} />
         <Route path="/courses" exact component={Courses} />
-        <Route path="/teachers" exact component={Teachers} />
+        {/* <Route path="/teachers" exact component={Teachers} /> */}
+        <Route path="/teachers" exact>
+          <Teachers user={user} setUser={setUser} />
+        </Route>
+        <Route path="/messenger" exact>
+          {user ? <Messenger user={user} setUser={setUser} /> : <Home />}
+        </Route>
       </BrowserRouter>
     </div>
   );

@@ -9,14 +9,14 @@ import sharp from "sharp";
 // router.post("/signin", signin);
 // router.post("/signup", signup);
 
-// router.get("/users", auth, async (req, res) => {
-//   try {
-//     const users = await User.find({});
-//     res.status(200).send(users);
-//   } catch (error) {
-//     res.status(500).send();
-//   }
-// });
+router.get("/users", auth, async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
 
 router.get("/users/me", auth, async (req, res) => {
   res.send(req.user);
@@ -74,19 +74,19 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-// router.get("/users/:id", async (req, res) => {
-//   const _id = req.params.id;
+router.get("/users/:id", async (req, res) => {
+  const _id = req.params.id;
 
-//   try {
-//     const user = await User.findById(_id);
-//     if (!user) {
-//       return res.status(404).send();
-//     }
-//     res.send(user);
-//   } catch (error) {
-//     res.status(500).send();
-//   }
-// });
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
 
 router.patch("/users/me", auth, async (req, res) => {
   const password = req.body.password;

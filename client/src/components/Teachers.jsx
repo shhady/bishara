@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Teachers.css";
-export default function Teachers() {
+export default function Teachers({ user, setUser }) {
   const [teachers, setTeachers] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [chat, setChat] = useState(null);
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    user.teacher ? setUserId(user.teacher._id) : setUserId(user.user._id);
+  });
+  useEffect(() => {
+    setChat({
+      senderId: userId,
+      receiverId: selectedTeacher,
+    });
+  }, [selectedTeacher]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -11,6 +24,14 @@ export default function Teachers() {
     };
     fetch();
   }, []);
+  useEffect(() => {
+    const startChat = async () => {
+      if (!selectedTeacher) return;
+      await axios.post("http://localhost:5000/conversations", chat);
+    };
+    startChat();
+  }, [chat]);
+
   console.log(teachers);
   if (!teachers)
     return (
@@ -35,6 +56,15 @@ export default function Teachers() {
         </div>
       </div>
     );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // console.log(teacher);
+    setSelectedTeacher();
+
+    // const teacher = teachers.filter((teacher) => teacher.id === e.target.value);
+    // setSelectedTeacher(teacher);
+  };
+  console.log(selectedTeacher);
 
   const drawData = () => {
     return teachers.map((teacher, i) => {
@@ -52,6 +82,15 @@ export default function Teachers() {
             {teacher.firstName} {teacher.lastName}
           </div>
           <div style={{ textAlign: "center" }}>{teacher.about}</div>
+          <div>
+            <button
+              onClick={() => {
+                setSelectedTeacher(teacher._id);
+              }}
+            >
+              chat
+            </button>
+          </div>
         </div>
       );
     });
