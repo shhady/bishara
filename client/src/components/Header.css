@@ -17,6 +17,9 @@
     text-align: center;
     align-items: center;
 }
+button{
+    cursor: pointer;
+}
 /* .auth{
     display:flex;
     justify-content:center;
@@ -71,7 +74,58 @@
     display: flex;
     justify-content: space-around
 }
-@media (max-width: 845px){
+.registerBox{
+    /* border: 1px solid gray; */
+    border-style: outset;
+    border-radius: 5px;
+}
+.registerBox:hover{
+    border-style: inset;
+}
+
+.logOutHeader{
+    border-style: outset;
+    border-radius: 5px;
+}
+.logOutHeader:hover{
+        border-style: inset;
+
+}
+.notificationNotification{
+    position: absolute;
+    margin-top: -25px;
+    margin-right: 35%;
+    width:15px;
+    height: 15px;
+    background-color: rgb(246, 95, 95);
+    border-radius:50%
+}
+.notificationMessage{
+    position: absolute;
+    margin-top: -25px;
+    margin-right: 35%;
+    width:15px;
+    height: 15px;
+    background-color: rgb(246, 95, 95);
+    border-radius:50%
+}
+
+.notification-container {
+    
+        position: absolute;
+        top: 125px;
+        left: 50px;
+        background: white
+      
+}
+.notificationMessage-container{
+    position: absolute;
+    top: 125px;
+    left: 100px;
+    background: white
+    
+}
+@media (max-width: 1010px){
     .logoImage{
         width:60px;
         height:40px
@@ -103,5 +157,23 @@
         /* flex-direction: column; */
     justify-content: space-evenly;
     align-items: flex-start
+    }
+    .notification-container {
+        position: absolute;
+        top: 90px;
+    }
+    .notificationMessage-container{
+        position: absolute;
+        top: 90px;
+    }
+}
+
+@media(max-width: 1000px) and (min-width: 500px){
+    .notificationMessage{
+        margin-right: 43%;
+    }
+    .notificationNotification{
+        margin-right: 43%;
+
     }
 }

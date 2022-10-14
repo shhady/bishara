@@ -18,20 +18,20 @@ router.post("/courses", auth, (req, res) => {
 
 router.get("/courses", async (req, res) => {
   try {
-    const courses = await Course.find({}).sort({ createdAt: 1 });
+    const courses = await Course.find({}).sort({ createdAt: -1 });
     res.status(200).send(courses);
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-router.get("/courses/:id", auth, async (req, res) => {
+router.get("/courses/:id", async (req, res) => {
   const _id = req.params.id;
 
   try {
-    // const course = await Course.findById(_id);
+    const course = await Course.findById(_id);
 
-    const course = await Course.findOne({ _id, owner: req.teacher._id });
+    // const course = await Course.findOne({ _id, owner: req.teacher._id });
     if (!course) {
       return res.status(404).send();
     }
@@ -41,7 +41,7 @@ router.get("/courses/:id", auth, async (req, res) => {
   }
 });
 
-router.patch("/courses/:id", auth, async (req, res) => {
+router.patch("/courses/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdate = ["instrument", "likes", "videos"];
   const isValidOperation = updates.every((update) => {
@@ -75,13 +75,37 @@ router.patch("/courses/:id", auth, async (req, res) => {
     res.status(400).send(error);
   }
 });
+router.put("/courses/:id", async (req, res) => {
+  const url = req.body.url;
+  const episode = req.body.episode;
+  const courseToupdate = await Course.findOneAndUpdate(
+    { _id: req.params.id },
+    { $push: { videos: { url, episode } } }
+  );
+  await courseToupdate.save();
+  // console.log(firstName);
+  res.status(200).send(courseToupdate);
+});
 
-router.delete("/courses/:id", auth, async (req, res) => {
+router.put("/course/:id", async (req, res) => {
+  const videoId = req.body.videoId;
+  // console.log(videoId);
+  const courseToupdate = await Course.findOneAndUpdate(
+    { _id: req.params.id },
+    { $pull: { videos: { _id: videoId } } }
+  );
+  await courseToupdate.save();
+  // console.log(firstName);
+
+  res.status(200).send(courseToupdate);
+});
+
+router.delete("/courses/:id", async (req, res) => {
   try {
     // const course = await Course.findByIdAndDelete(req.params.id);
     const course = await Course.findOneAndDelete({
       _id: req.params.id,
-      owner: req.teacher._id,
+      // owner: req.teacher._id,
     });
     if (!course) {
       return res.status(404).send();

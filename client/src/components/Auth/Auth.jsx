@@ -52,7 +52,7 @@ export default function Auth({ user, setUser }) {
     e.preventDefault();
     try {
       const result = await axios.post(
-        `http://localhost:5000/teachers/login`,
+        process.env.REACT_APP_BACKEND_URL + `/teachers/login`,
         studentlogin
       );
       window.localStorage.setItem("profile", JSON.stringify(result.data));
@@ -71,7 +71,7 @@ export default function Auth({ user, setUser }) {
     e.preventDefault();
     try {
       const result = await axios.post(
-        `http://localhost:5000/users/login`,
+        process.env.REACT_APP_BACKEND_URL + `/users/login`,
         studentlogin
       );
       window.localStorage.setItem("profile", JSON.stringify(result.data));
@@ -92,7 +92,10 @@ export default function Auth({ user, setUser }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await axios.post(`http://localhost:5000/users`, formData);
+    const result = await axios.post(
+      process.env.REACT_APP_BACKEND_URL + `/users`,
+      formData
+    );
     window.localStorage.setItem("profile", JSON.stringify(result.data));
     window.localStorage.setItem("token", result.data.token);
     history.push("/profile");

@@ -7,7 +7,9 @@ export default function Post() {
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await axios.get("http://localhost:5000/courses");
+      const result = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + "/courses"
+      );
       setposts(result.data);
     };
     fetch();

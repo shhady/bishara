@@ -26,15 +26,18 @@
     overflow-y: scroll;
     padding-left: 10px;
 }
-/* .chatOnline{
+.chatOnline{
     flex: 3
-} */
+}
 .chatMenuWrapper, .chatBoxWrapper, .chatOnlineWrapper{
     padding: 10px;
     background: white;
     height: 100%;
 } 
-
+.chatMenuWrapper{
+    overflow-x:hidden;
+     overflow-y:auto
+}
 .chatBoxBottom{
     margin-top:5px;
     display: flex;

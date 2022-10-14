@@ -36,3 +36,22 @@
 .buttonP:hover{
     border: 2px solid black;
 }
+
+@media(max-width:768px){
+    .mainVideos{
+        display: grid;
+        grid-template-columns:repeat(1, 1fr)
+    }
+    .buttonP{
+        width: 80%;
+        height: 40%;
+    }
+    .buttonO{
+        width: 80%;
+        height: 40%;
+    }
+    .videos{
+        width: 100%;
+        margin:auto;
+    }
+}

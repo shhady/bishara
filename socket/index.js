@@ -9,12 +9,13 @@ const addUser = (userId, socketId) => {
   !users.some((user) => user.userId === userId) &&
     users.push({ userId, socketId });
 };
+console.log(users);
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
 };
 const getUser = (userId) => {
   const selected = users.find((user) => user.userId == userId);
-  console.log(selected);
+  console.log(selected + "nowselected");
   return selected;
 };
 
@@ -26,15 +27,45 @@ io.on("connection", (socket) => {
     console.log(users);
     io.emit("getUsers", users);
   });
+  socket.on(
+    "sendNotificationComment",
+    ({
+      senderName,
+      senderFamily,
+      senderId,
+      receiverId,
+      videoName,
+      videoId,
+      courseid,
+    }) => {
+      const user = getUser(receiverId);
+      console.log(receiverId);
+      console.log(senderId);
+      console.log(senderName);
+      console.log(videoName);
+      console.log(user);
 
-  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+      // console.log(io.sockets.manager.roomClient[user.socketId]);
+      io.to(user?.socketId).emit("getNotificationComment", {
+        senderName,
+        senderFamily,
+        videoName,
+        courseid,
+        videoId,
+      });
+    }
+  );
+
+  socket.on("sendMessage", ({ senderId, receiverId, userName, text }) => {
     const user = getUser(receiverId);
     // console.log(io.sockets.manager.roomClient[user.socketId]);
     io.to(user?.socketId).emit("getMessage", {
       senderId,
+      userName,
       text,
     });
   });
+
   socket.on("disconnect", () => {
     console.log("disconnected");
     removeUser(socket.id);

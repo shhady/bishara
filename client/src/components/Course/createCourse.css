@@ -1,0 +1,15 @@
+.createCourseForm{
+
+        margin: auto;
+        margin-top: 130px;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content:center;
+        align-items:center;
+        border: 1px solid black;
+    
+}
+
+
+

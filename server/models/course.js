@@ -22,10 +22,16 @@ const courseSchema = mongoose.Schema(
     level: { type: String, required: true },
     videos: [
       {
-        public_id: { type: String },
+        episode: { type: String },
         url: { type: String },
       },
     ],
+    // comments: [
+    //   {
+    //     comment: { type: Object },
+    //     // reply: { type: Object },
+    //   },
+    // ],
   },
   {
     timestamps: true,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Header.css";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -12,24 +12,45 @@ import {
   faMessage,
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
-
+// import { io } from "socket.io-client";
 // import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-export default function Header({ user, setUser }) {
+export default function Header({ user, setUser, socket }) {
   // const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const dispatch = useDispatch();
   const history = useHistory();
   const [openMenu, setOpenMenu] = useState(false);
+  // const [socket, setSocket] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState([]);
+  const [notificationNotification, setNotificationNotification] = useState([]);
+  const [openNotifications, setOpenNotifications] = useState(false);
+  const [openNotificationsMessage, setOpenNotificationsMessage] =
+    useState(false);
   // const location = useLocation();
   console.log(user);
 
   // useEffect(() => {
-  //   const token = user?.token;
-  //   setUser(JSON.parse(localStorage.getItem("profile")));
-  // }, [location]);
+  //   setSocket(io("http://localhost:8900"));
+  //   console.log(socket);
+  // }, []);
 
+  useEffect(() => {
+    socket?.on("getNotificationComment", (data) => {
+      setNotificationNotification((prev) => [...prev, data]);
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on("getMessage", (data) => {
+      notificationMessage.includes(data.senderId);
+      setNotificationMessage((prev) => [...prev, data]);
+    });
+  }, [socket]);
+
+  console.log(notificationNotification);
+  console.log(notificationMessage);
   const handleLogoutTeacher = async () => {
     const response = await axios.post(
-      `http://localhost:5000/teachers/logout`,
+      process.env.REACT_APP_BACKEND_URL + `/teachers/logout`,
       {},
       {
         headers: {
@@ -48,15 +69,17 @@ export default function Header({ user, setUser }) {
     }
 
     // localStorage.removeItem("profile");
-    // await axios.post("http://localhost:5000/teachers/logoutAll");
+    // await axios.post(process.env.REACT_APP_BACKEND_URL+"/teachers/logoutAll");
     dispatch({ type: "LOGOUT" });
     history.push("/");
     setUser(null);
+    setNotificationNotification([]);
+    setNotificationMessage([]);
   };
 
   const handleLogoutStudent = async () => {
     const response = await axios.post(
-      `http://localhost:5000/users/logout`,
+      process.env.REACT_APP_BACKEND_URL + `/users/logout`,
       {},
       {
         headers: {
@@ -75,10 +98,63 @@ export default function Header({ user, setUser }) {
     }
 
     // localStorage.removeItem("profile");
-    // await axios.post("http://localhost:5000/teachers/logoutAll");
+    // await axios.post(process.env.REACT_APP_BACKEND_URL+"/teachers/logoutAll");
     dispatch({ type: "LOGOUT" });
     history.push("/");
     setUser(null);
+    setNotificationNotification([]);
+    setNotificationMessage([]);
+  };
+  const handleClickOnNotification = (notification) => {
+    console.log(notification);
+    // setNotificationClicked(!notificationClicked);
+    // setCourseIdNew(notification.courseid);
+    window.localStorage.setItem("courseId", notification.courseid);
+    history.push({ pathname: "/course" });
+    setOpenNotifications(!openNotifications);
+  };
+
+  const drawNotifications = () => {
+    return notificationNotification?.map((notification, i) => {
+      return (
+        <div key={i} style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{ border: "1px solid gray", padding: "5px" }}
+            onClick={() => handleClickOnNotification(notification)}
+          >
+            {notification.senderName} {notification.senderFamily} علق على الدرس
+            {notification.videoName}
+          </div>
+        </div>
+      );
+    });
+  };
+
+  const uniques = notificationMessage
+    .map((obj) => {
+      return obj.userName;
+    })
+    .filter((item, index, arr) => {
+      return arr.indexOf(item) == index;
+    });
+
+  console.log(uniques);
+  const drawNotificationsMessages = () => {
+    return uniques.map((notification, i) => {
+      return (
+        <div key={i} style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{ border: "1px solid gray", padding: "5px" }}
+            onClick={() => {
+              history.push("/messenger");
+              setOpenNotificationsMessage(!openNotificationsMessage);
+            }}
+          >
+            {notification} ارسل رسالة
+          </div>
+        </div>
+      );
+    });
   };
 
   return (
@@ -125,7 +201,11 @@ export default function Header({ user, setUser }) {
 
           <div>
             <Link to="/">
-              <img src="Logonew.png" alt="logo" className="logoImage" />
+              <img
+                src="http://res.cloudinary.com/shhady/image/upload/v1664888906/avatars/gep1zc4bhncduayxohyu.png"
+                alt="logo"
+                className="logoImage"
+              />
             </Link>
           </div>
 
@@ -214,10 +294,11 @@ export default function Header({ user, setUser }) {
                     style={{
                       display: "flex",
                       // border: "1px solid gray",
-                      borderRadius: "10px",
+                      borderRadius: "5px",
                       height: "30px",
-                      padding: "3px",
+                      padding: "0px 5px ",
                     }}
+                    className="logOutHeader"
                   >
                     <div
                       style={{
@@ -243,7 +324,10 @@ export default function Header({ user, setUser }) {
                   </div>
 
                   {user?.teacher?.role === "admin" ? (
-                    <Link to="/CreateTeacher">
+                    <Link
+                      to="/CreateTeacher"
+                      style={{ textDecoration: "none" }}
+                    >
                       <div
                         style={{
                           display: "flex",
@@ -251,9 +335,12 @@ export default function Header({ user, setUser }) {
                           justifyContent: "center",
                           alignItems: "center",
                           marginRight: "10px",
-                          background: "#cdcaca",
+                          // background: "#cdcaca",
                           cursor: "pointer",
+                          height: "30px",
+                          padding: "0px 5px",
                         }}
+                        className="logOutHeader"
                       >
                         تسجيل معلمين
                       </div>
@@ -277,9 +364,10 @@ export default function Header({ user, setUser }) {
                     alignItems: "center",
                     justifyContent: "center",
                     // border: "1px solid gray",
-                    borderRadius: "10px",
+                    // borderRadius: "10px",
                     cursor: "pointer",
                   }}
+                  className="logOutHeader"
                 >
                   <div
                     onClick={handleLogoutStudent}
@@ -331,11 +419,13 @@ export default function Header({ user, setUser }) {
                 <div
                   style={{
                     display: "flex",
-                    border: "1px solid gray",
-                    borderRadius: "10px",
+                    // borderStyle: "outset",
+                    // border: "1px solid gray",
+                    // borderRadius: "5px",
                     height: "30px",
                     padding: "3px",
                   }}
+                  className="registerBox"
                 >
                   <div
                     style={{
@@ -414,12 +504,80 @@ export default function Header({ user, setUser }) {
               </div>
             </Link>
           </div>
-          <div style={{ padding: "2px", border: "1px solid white" }}>
+          <div
+            style={{
+              padding: "2px",
+              border: "1px solid white",
+              cursor: "pointer",
+              position: "relative",
+            }}
+            onClick={() => {
+              // history.push("/messenger");
+              setOpenNotificationsMessage(!openNotificationsMessage);
+            }}
+          >
             <FontAwesomeIcon icon={faMessage} />
+            {uniques.length > 0 ? (
+              <div className="notificationMessage">{uniques.length}</div>
+            ) : null}
           </div>
-          <div style={{ padding: "2px", border: "1px solid white" }}>
+
+          {openNotificationsMessage ? (
+            <div className="notificationMessage-container">
+              {drawNotificationsMessages()}
+              <div
+                style={{
+                  border: "1px solid gray",
+                  background: "skyblue",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setOpenNotificationsMessage(!openNotificationsMessage);
+                  setNotificationMessage([]);
+                }}
+              >
+                حذف جميع الاشعارات
+              </div>
+            </div>
+          ) : null}
+
+          <div
+            style={{
+              padding: "2px",
+              border: "1px solid white",
+              cursor: "pointer",
+              position: "relative",
+            }}
+          >
             <FontAwesomeIcon icon={faBell} />
+            {notificationNotification.length > 0 ? (
+              <div
+                className="notificationNotification"
+                onClick={() => setOpenNotifications(!openNotifications)}
+              >
+                {notificationNotification.length}
+              </div>
+            ) : null}
           </div>
+
+          {openNotifications ? (
+            <div className="notification-container">
+              {drawNotifications()}
+              <div
+                style={{
+                  border: "1px solid gray",
+                  background: "skyblue",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setOpenNotifications(!openNotifications);
+                  setNotificationNotification([]);
+                }}
+              >
+                حذف جميع الاشعارات
+              </div>
+            </div>
+          ) : null}
           {openMenu && (
             <div className="menu-details">
               <Link to="/" style={{ textDecoration: "none" }}>

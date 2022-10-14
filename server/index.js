@@ -8,6 +8,8 @@ import courseRouter from "./routers/course.js";
 import practiceRouter from "./routers/practice.js";
 import conversationRouter from "./routers/conversations.js";
 import messageRouter from "./routers/messages.js";
+import openconversationRouter from "./routers/openConversations.js";
+import commentRouter from "./routers/comment.js";
 // import http from "http";
 // import { Server } from "socket.io";
 
@@ -38,6 +40,8 @@ app.use(courseRouter);
 app.use(practiceRouter);
 app.use(conversationRouter);
 app.use(messageRouter);
+app.use(openconversationRouter);
+app.use(commentRouter);
 const CONNECTION_URL = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.vae8tj1.mongodb.net/?retryWrites=true&w=majority`;
 const PORT = process.env.PORT;
 mongoose

@@ -20,9 +20,10 @@ export default function CreateTeacher() {
   console.log(teacher);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post(`http://localhost:5000/teachers`, teacher);
+    await axios.post(process.env.REACT_APP_BACKEND_URL + `/teachers`, teacher);
     history.push("/teachers");
   };
+  console.log(process.env.REACT_APP_BACKEND_URL);
 
   const handleChange = (e) => {
     setTeacher({ ...teacher, [e.target.name]: e.target.value });

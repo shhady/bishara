@@ -1,37 +1,83 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Teachers.css";
+import { useHistory } from "react-router-dom";
 export default function Teachers({ user, setUser }) {
   const [teachers, setTeachers] = useState(null);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [checkChat, setCheckChat] = useState(null);
   const [chat, setChat] = useState(null);
   const [userId, setUserId] = useState("");
+  const [allChats, setAllChats] = useState(null);
+  const [preventChat, setPreventChat] = useState([]);
+  const history = useHistory();
+  window.onpopstate = () => {
+    history.push("/");
+  };
+  useEffect(() => {
+    if (!user) return;
+    user.teacher ? setUserId(user.teacher._id) : setUserId(user.user._id);
+  }, [user]);
 
   useEffect(() => {
-    user.teacher ? setUserId(user.teacher._id) : setUserId(user.user._id);
-  });
+    const getPrevent = async () => {
+      const res = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + "/openconversations"
+      );
+      setAllChats(res.data);
+      // res.data.openconversations.map((x) => x[0]);
+      console.log(res.data[0].openConversations);
+      res.data.map((x) =>
+        setPreventChat([...preventChat, x.openConversations[0]])
+      );
+    };
+    getPrevent();
+  }, []);
+
+  console.log(preventChat);
+
+  const handleClick = (teacher) => {
+    setSelectedTeacher(teacher._id);
+    setCheckChat({ senderId: userId, receiverId: teacher._id });
+    setChat({ senderId: userId, receiverId: teacher._id });
+  };
+
   useEffect(() => {
-    setChat({
-      senderId: userId,
-      receiverId: selectedTeacher,
-    });
-  }, [selectedTeacher]);
+    if (!chat) return;
+    const startChat = async () => {
+      if (!userId) return;
+      const exists = preventChat.find(
+        (x) => x.senderId === userId && x.receiverId === selectedTeacher
+      );
+      console.log(exists);
+      if (exists) {
+        return console.log("already conversation");
+      } else {
+        setPreventChat([...preventChat, checkChat]);
+        await axios.post(
+          process.env.REACT_APP_BACKEND_URL + "/openconversations",
+          checkChat
+        );
+        await axios.post(
+          process.env.REACT_APP_BACKEND_URL + "/conversations",
+          checkChat
+        );
+        console.log("prevent Update, conv");
+      }
+    };
+    startChat();
+    console.log(preventChat);
+  }, [checkChat]);
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await axios.get("http://localhost:5000/teachers");
+      const result = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + "/teachers"
+      );
       setTeachers(result.data);
     };
     fetch();
   }, []);
-  useEffect(() => {
-    const startChat = async () => {
-      if (!selectedTeacher) return;
-      await axios.post("http://localhost:5000/conversations", chat);
-    };
-    startChat();
-  }, [chat]);
-
   console.log(teachers);
   if (!teachers)
     return (
@@ -56,14 +102,7 @@ export default function Teachers({ user, setUser }) {
         </div>
       </div>
     );
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // console.log(teacher);
-    setSelectedTeacher();
 
-    // const teacher = teachers.filter((teacher) => teacher.id === e.target.value);
-    // setSelectedTeacher(teacher);
-  };
   console.log(selectedTeacher);
 
   const drawData = () => {
@@ -84,9 +123,10 @@ export default function Teachers({ user, setUser }) {
           <div style={{ textAlign: "center" }}>{teacher.about}</div>
           <div>
             <button
-              onClick={() => {
-                setSelectedTeacher(teacher._id);
-              }}
+              // onClick={() => {
+              //   setSelectedTeacher(teacher._id);
+              // }}
+              onClick={() => handleClick(teacher)}
             >
               chat
             </button>

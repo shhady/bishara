@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const Oudvideo = () => (
   <div className="video-responsive">
     <iframe
-      width="90%"
+      width="100%"
       height="400px"
       src={`https://www.youtube.com/embed/d9-J5NQ9MRo`}
       frameBorder="0"

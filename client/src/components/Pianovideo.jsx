@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const Pianovideo = () => (
   <div className="video-responsive">
     <iframe
-      width="90%"
+      width="100%"
       height="400px"
       src={`https://www.youtube.com/embed/Jk9a4OOc9-Y`}
       frameBorder="0"

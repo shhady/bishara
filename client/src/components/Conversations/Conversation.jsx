@@ -13,7 +13,7 @@ export default function Conversation({ conversation, currentUser }) {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/users/" + friendId
+          process.env.REACT_APP_BACKEND_URL + "/users/" + friendId
         );
         setUser(response.data);
       } catch (error) {
@@ -21,7 +21,7 @@ export default function Conversation({ conversation, currentUser }) {
       }
       try {
         const response = await axios.get(
-          "http://localhost:5000/teachers/" + friendId
+          process.env.REACT_APP_BACKEND_URL + "/teachers/" + friendId
         );
         setUser(response.data);
       } catch (error) {
@@ -32,18 +32,20 @@ export default function Conversation({ conversation, currentUser }) {
   }, [conversation, currentUser]);
 
   return (
-    <div className="conversation">
-      <img
-        className="imageConversation"
-        src={currentUser?.avatar ? currentUser.avatar : "./Logo.JPG"}
-        alt="Img"
-      />
+    <>
+      <div className="conversation">
+        <img
+          className="imageConversation"
+          src={currentUser?.avatar ? currentUser.avatar : "./Logo.JPG"}
+          alt="Img"
+        />
 
-      <span className="nameConversation">
-        {user?.firstName}
-        {"  "}
-        {user?.lastName}
-      </span>
-    </div>
+        <span className="nameConversation">
+          {user?.firstName}
+          {"  "}
+          {user?.lastName}
+        </span>
+      </div>
+    </>
   );
 }

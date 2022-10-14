@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 // export default mongoose.model("User", userSchema);
 const ConversationSchema = mongoose.Schema(
   {
-    members: { type: Array, unique: true },
+    members: { type: Array },
   },
   {
     timestamps: true,
