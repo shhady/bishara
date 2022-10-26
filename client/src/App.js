@@ -49,7 +49,7 @@ export default function App() {
   }, [user]);
   useEffect(() => {
     if (!userId) return;
-    setSocket(io("http://localhost:8900"));
+    setSocket(io());
     console.log(socket);
   }, [userId]);
 

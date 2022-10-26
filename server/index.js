@@ -10,12 +10,84 @@ import conversationRouter from "./routers/conversations.js";
 import messageRouter from "./routers/messages.js";
 import openconversationRouter from "./routers/openConversations.js";
 import commentRouter from "./routers/comment.js";
-// import http from "http";
-// import { Server } from "socket.io";
+import http from "http";
+// const socketio = require("socket.io");
+import { Server } from "socket.io";
 
 const app = express();
-// const server = http.createServer(app);
-// const io = new Server(server);
+const server = http.createServer(app);
+const io = new Server(server);
+// io.listen(3000);
+// const io = socketio(server);
+
+let users = [];
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
+};
+console.log(users);
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
+const getUser = (userId) => {
+  const selected = users.find((user) => user.userId == userId);
+  console.log(selected + "nowselected");
+  return selected;
+};
+
+io.on("connection", (socket) => {
+  console.log("user connected");
+
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    console.log(users);
+    io.emit("getUsers", users);
+  });
+  socket.on(
+    "sendNotificationComment",
+    ({
+      senderName,
+      senderFamily,
+      senderId,
+      receiverId,
+      videoName,
+      videoId,
+      courseid,
+    }) => {
+      const user = getUser(receiverId);
+      console.log(receiverId);
+      console.log(senderId);
+      console.log(senderName);
+      console.log(videoName);
+      console.log(user);
+
+      // console.log(io.sockets.manager.roomClient[user.socketId]);
+      io.to(user?.socketId).emit("getNotificationComment", {
+        senderName,
+        senderFamily,
+        videoName,
+        courseid,
+        videoId,
+      });
+    }
+  );
+
+  socket.on("sendMessage", ({ senderId, receiverId, userName, text }) => {
+    const user = getUser(receiverId);
+    // console.log(io.sockets.manager.roomClient[user.socketId]);
+    io.to(user?.socketId).emit("getMessage", {
+      senderId,
+      userName,
+      text,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("disconnected");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+});
 
 // io.on("connection", () => {
 //   console.log("connected to websocket");
@@ -47,7 +119,7 @@ const PORT = process.env.PORT;
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>
-    app.listen(PORT, () => console.log(`server running on port : ${PORT}`))
+    server.listen(PORT, () => console.log(`server running on port : ${PORT}`))
   )
   .catch((error) => console.log(error));
 
