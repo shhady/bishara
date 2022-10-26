@@ -30,6 +30,10 @@ const CreateTeacher = React.lazy(() =>
   import("./components/Form/CreateTeacher")
 );
 const Auth = React.lazy(() => import("./components/Auth/Auth"));
+const PianoPage = React.lazy(() => import("./components/PianoPage"));
+const OudPage = React.lazy(() => import("./components/OudPage"));
+const ViolinPage = React.lazy(() => import("./components/ViolinPage"));
+
 // const Oud = React.lazy(() => import("./components/Oud"));
 // const Piano = React.lazy(() => import("./components/PianoPage"));
 
@@ -75,7 +79,7 @@ export default function App() {
           <Route path="/courses" exact>
             <Courses user={user} setUser={setUser} socket={socket} />
           </Route>
-          <Route path="/course" exact>
+          <Route path="/course/:id" exact>
             <Course user={user} setUser={setUser} socket={socket} />
           </Route>
           {/* <Route path="/teachers" exact component={Teachers} /> */}
@@ -84,6 +88,15 @@ export default function App() {
           </Route>
           <Route path="/StudentsPractices" exact>
             <StudentsPractices user={user} setUser={setUser} />
+          </Route>
+          <Route path="/PianoPage" exact>
+            <PianoPage user={user} setUser={setUser} />
+          </Route>
+          <Route path="/OudPage" exact>
+            <OudPage user={user} setUser={setUser} />
+          </Route>
+          <Route path="/ViolinPage" exact>
+            <ViolinPage user={user} setUser={setUser} />
           </Route>
 
           <Route path="/messenger" exact>

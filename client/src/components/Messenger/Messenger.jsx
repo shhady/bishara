@@ -122,14 +122,14 @@ export default function Messenger({ user, setUser, socket }) {
       <div className="chatMenu">
         <div className="chatMenuWrapper">
           {/* <input className="chatMenuInput" placeholder="ابحث عن معلمين" /> */}
-          {/* {user.teacher ? (
-            <> */}
-          {conversations.map((c, i) => (
-            <div onClick={() => setCurrentChat(c)} key={i}>
-              <Conversation conversation={c} currentUser={userId} />
-            </div>
-          ))}
-          {/* </>
+          {user.teacher ? (
+            <>
+              {conversations.map((c, i) => (
+                <div onClick={() => setCurrentChat(c)} key={i}>
+                  <Conversation conversation={c} currentUser={userId} />
+                </div>
+              ))}
+            </>
           ) : (
             <>
               <ListOfTeachers
@@ -139,7 +139,7 @@ export default function Messenger({ user, setUser, socket }) {
                 setCurrentChat={setCurrentChat}
               />
             </>
-          )} */}
+          )}
         </div>
       </div>
       <div className="chatBox">

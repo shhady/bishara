@@ -124,9 +124,19 @@ export default function Comment({ course, courseId, chooseVideo }) {
     console.log(comment._id);
     setDoneAddingComment(!doneAddingComment);
     const deleteTheComment = async () => {
-      await axios.delete(
-        process.env.REACT_APP_BACKEND_URL + `/comments/${comment._id}`
-      );
+      await axios
+        .delete(process.env.REACT_APP_BACKEND_URL + `/comments/${comment._id}`)
+        .then(async () => {
+          const freshComments = await axios.get(
+            process.env.REACT_APP_BACKEND_URL + `/comments`
+          );
+          console.log(freshComments.data);
+          const resultComments = freshComments?.data.filter(
+            (comment) => comment.courseId === videoId
+          );
+          setCourseComments(resultComments);
+          console.log(resultComments);
+        });
     };
     deleteTheComment();
     // showComments();
@@ -155,7 +165,7 @@ export default function Comment({ course, courseId, chooseVideo }) {
               ))}
               {"  "}
             </div>
-            {replyingDone ? (
+            {/* {replyingDone ? (
               <>
                 <div>
                   <FontAwesomeIcon icon={faReply} /> {user.teacher?.firstName}{" "}
@@ -163,7 +173,7 @@ export default function Comment({ course, courseId, chooseVideo }) {
                 </div>
                 <div>{replyingDone}</div>
               </>
-            ) : null}
+            ) : null} */}
           </div>
           <div
             style={{
@@ -245,13 +255,22 @@ export default function Comment({ course, courseId, chooseVideo }) {
   const SubmitReply = async (comment) => {
     setMyReply("");
     setReplyingDone(myReply);
-    await axios.put(
-      process.env.REACT_APP_BACKEND_URL + `/comments/${comment._id}`,
-      {
+    await axios
+      .put(process.env.REACT_APP_BACKEND_URL + `/comments/${comment._id}`, {
         ...addReply,
         reply: myReply,
-      }
-    );
+      })
+      .then(async () => {
+        const freshComments = await axios.get(
+          process.env.REACT_APP_BACKEND_URL + `/comments`
+        );
+        console.log(freshComments.data);
+        const resultComments = freshComments?.data.filter(
+          (comment) => comment.courseId === videoId
+        );
+        setCourseComments(resultComments);
+        console.log(resultComments);
+      });
   };
 
   const handleChange = (e) => {
@@ -263,8 +282,12 @@ export default function Comment({ course, courseId, chooseVideo }) {
     setAddComment({
       userid: userid,
       courseId: videoId,
+      theCourse: courseid,
       firstName: userF,
       lastName: userL,
+      courseOwnerId: ownerId,
+      videoName: videoName,
+      read: false,
     });
   };
   const handleSubmit = async () => {
@@ -279,6 +302,17 @@ export default function Comment({ course, courseId, chooseVideo }) {
         comment: submited,
       })
       .then(() => setDoneAddingComment(!doneAddingComment))
+      .then(async () => {
+        const freshComments = await axios.get(
+          process.env.REACT_APP_BACKEND_URL + `/comments`
+        );
+        console.log(freshComments.data);
+        const resultComments = freshComments?.data.filter(
+          (comment) => comment.courseId === videoId
+        );
+        setCourseComments(resultComments);
+        console.log(resultComments);
+      })
       .then(() => {
         socket.emit("sendNotificationComment", {
           senderName: userF,

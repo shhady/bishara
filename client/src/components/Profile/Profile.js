@@ -99,7 +99,7 @@ export default function Profile({ user, setUser }) {
   useEffect(() => {
     const res = allPractices.filter((practice) => practice.ownerId === userId);
     setUserPractices(res);
-  }, [allPractices]);
+  }, [allPractices, userId]);
   // const showData = () => {
   //   const res = allPractices.filter(
   //     (practice) => practice.ownerId === user.user._id
@@ -116,9 +116,16 @@ export default function Profile({ user, setUser }) {
   const deletePractice = (practice) => {
     setPracticeId(practice._id);
     const deleteThePractice = async () => {
-      await axios.delete(
-        process.env.REACT_APP_BACKEND_URL + `/practices/${practice._id}`
-      );
+      await axios
+        .delete(
+          process.env.REACT_APP_BACKEND_URL + `/practices/${practice._id}`
+        )
+        .then(async () => {
+          const res = await axios.get(
+            process.env.REACT_APP_BACKEND_URL + `/practices`
+          );
+          setAllPractices(res.data);
+        });
     };
     deleteThePractice();
   };
@@ -127,7 +134,11 @@ export default function Profile({ user, setUser }) {
     return userPractices?.map((practice) => {
       return (
         <div
-          style={{ borderRight: "1px solid black", padding: "10px" }}
+          style={{
+            borderRight: "1px solid black",
+            borderBottom: "1px solid black",
+            padding: "10px",
+          }}
           key={practice._id}
         >
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -144,8 +155,6 @@ export default function Profile({ user, setUser }) {
               <div>
                 الدرس:
                 {practice.video}
-                <br />
-                التمرين:
               </div>
             </div>
             <div>
@@ -166,6 +175,7 @@ export default function Profile({ user, setUser }) {
                 width: "50%",
               }}
             >
+              <div>التمرين</div>
               <video
                 key={practice.myPractice}
                 controls
@@ -174,9 +184,20 @@ export default function Profile({ user, setUser }) {
                 <source src={practice.myPractice} type="video/mp4" />
               </video>
             </div>
-            <div style={{ padding: "10px" }}>
-              تعليق المعلم:
-              <br /> {practice.reply}
+            <div style={{ padding: "0px 10px", width: "50%" }}>
+              رد المعلم:
+              {practice.videoReply ? (
+                <div>
+                  <video
+                    key={practice.videoReply}
+                    controls
+                    style={{ width: "100%", height: "250px" }}
+                  >
+                    <source src={practice.videoReply} type="video/mp4" />
+                  </video>
+                </div>
+              ) : null}
+              {practice.reply}
             </div>
           </div>
         </div>

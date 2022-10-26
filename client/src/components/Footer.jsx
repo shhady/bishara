@@ -4,12 +4,11 @@ export default function Footer() {
   return (
     <div
       style={{
-        background: "rgb(43, 42, 42)",
-        opacity: 0.9,
+        background: "rgba(27,26,31,255)",
         height: "30vh",
         marginTop: "30px",
         boxShadow:
-          "12px 8px 16px 12px rgba(43, 42, 42), 0 8px 16px 12px rgba(43, 42, 42), 0 12px 24px 0 rgba(43, 42, 42)",
+          "3px 2px 4px 3px rgb(77, 76, 76), 0 2px 4px 3px rgba(43, 42, 42), 0 6px 6px 0 rgba(43, 42, 42)",
       }}
     >
       Footer

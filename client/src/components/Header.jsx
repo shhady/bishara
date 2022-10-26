@@ -25,9 +25,39 @@ export default function Header({ user, setUser, socket }) {
   const [openNotifications, setOpenNotifications] = useState(false);
   const [openNotificationsMessage, setOpenNotificationsMessage] =
     useState(false);
+  const [backNot, setBackNot] = useState([]);
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    if (!user) return;
+    user.teacher ? setUserId(user.teacher._id) : setUserId(user.user._id);
+  }, []);
   // const location = useLocation();
-  console.log(user);
+  useEffect(() => {
+    const comments = async () => {
+      const result = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + `/comments/`
+      );
+      setBackNot(
+        result.data.filter((comment) => comment.courseOwnerId === userId)
+      );
+    };
+    comments();
+  }, [userId]);
+  console.log(backNot);
 
+  const clickOnBill = () => {
+    setOpenNotifications(!openNotifications);
+    setNotificationNotification([]);
+    const comments = async () => {
+      const result = await axios.get(
+        process.env.REACT_APP_BACKEND_URL + `/comments/`
+      );
+      setBackNot(
+        result.data.filter((comment) => comment.courseOwnerId === userId)
+      );
+    };
+    comments();
+  };
   // useEffect(() => {
   //   setSocket(io("http://localhost:8900"));
   //   console.log(socket);
@@ -35,7 +65,7 @@ export default function Header({ user, setUser, socket }) {
 
   useEffect(() => {
     socket?.on("getNotificationComment", (data) => {
-      setNotificationNotification((prev) => [...prev, data]);
+      setNotificationNotification([...notificationNotification, data]);
     });
   }, [socket]);
 
@@ -107,27 +137,65 @@ export default function Header({ user, setUser, socket }) {
   };
   const handleClickOnNotification = (notification) => {
     console.log(notification);
+    const setAsRead = async () => {
+      await axios
+        .patch(
+          process.env.REACT_APP_BACKEND_URL + `/comments/${notification._id}`,
+          {
+            read: true,
+          }
+        )
+        .then(async () => {
+          const result = await axios.get(
+            process.env.REACT_APP_BACKEND_URL + `/comments/`
+          );
+          setBackNot(
+            result.data.filter((comment) => comment.courseOwnerId === userId)
+          );
+        })
+        .then(window.localStorage.setItem("courseId", notification.theCourse))
+        .then(history.push({ pathname: `/course/${notification.theCourse}` }))
+        .then(window.location.reload());
+    };
+    setAsRead();
     // setNotificationClicked(!notificationClicked);
     // setCourseIdNew(notification.courseid);
-    window.localStorage.setItem("courseId", notification.courseid);
-    history.push({ pathname: "/course" });
     setOpenNotifications(!openNotifications);
   };
 
   const drawNotifications = () => {
-    return notificationNotification?.map((notification, i) => {
-      return (
-        <div key={i} style={{ display: "flex", flexDirection: "column" }}>
-          <div
-            style={{ border: "1px solid gray", padding: "5px" }}
-            onClick={() => handleClickOnNotification(notification)}
-          >
-            {notification.senderName} {notification.senderFamily} علق على الدرس
-            {notification.videoName}
+    return backNot
+      ?.sort((a, b) => a.createdAt > b.createdAt)
+      .map((notification, i) => {
+        return (
+          <div key={i} style={{ display: "flex", flexDirection: "column" }}>
+            {notification.read ? (
+              <div
+                style={{
+                  border: "1px solid gray",
+                  padding: "5px",
+                }}
+                onClick={() => handleClickOnNotification(notification)}
+              >
+                {notification.firstName} {notification.lastName} علق على الدرس
+                {notification.videoName}
+              </div>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid gray",
+                  padding: "5px",
+                  backgroundColor: "grey",
+                }}
+                onClick={() => handleClickOnNotification(notification)}
+              >
+                {notification.firstName} {notification.lastName} علق على الدرس
+                {notification.videoName}
+              </div>
+            )}
           </div>
-        </div>
-      );
-    });
+        );
+      });
   };
 
   const uniques = notificationMessage
@@ -135,7 +203,7 @@ export default function Header({ user, setUser, socket }) {
       return obj.userName;
     })
     .filter((item, index, arr) => {
-      return arr.indexOf(item) == index;
+      return arr.indexOf(item) === index;
     });
 
   console.log(uniques);
@@ -161,81 +229,136 @@ export default function Header({ user, setUser, socket }) {
     <div>
       <div className="header">
         <div className="middle">
-          {user ? (
-            <div>
-              {user.teacher ? (
-                <Link to="/profile" style={{ textDecoration: "none" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src={user.teacher.avatar}
-                      alt={user.teacher.firstName}
-                      style={{
-                        height: "40px",
-                        width: "40px",
-                        borderRadius: "50%",
-                        marginLeft: "10px",
-                        marginRight: "10px",
-                      }}
-                    />
-                    {user.teacher.firstName} {user.teacher.lastName}
-                  </div>
-                </Link>
-              ) : (
-                <Link to="/profile" style={{ textDecoration: "none" }}>
-                  <>
-                    <FontAwesomeIcon icon={faUser} /> {user.user.firstName}{" "}
-                    {user.user.lastName}
-                  </>
-                </Link>
-              )}
-            </div>
-          ) : (
-            <div style={{ visibility: "hidden" }}>X</div>
-          )}
-
-          <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Link to="/">
               <img
-                src="http://res.cloudinary.com/shhady/image/upload/v1664888906/avatars/gep1zc4bhncduayxohyu.png"
+                src="https://res.cloudinary.com/shhady/image/upload/v1666188610/avatars/wjph4gkbarqbnntmpcvw.jpg"
                 alt="logo"
                 className="logoImage"
               />
             </Link>
+            <Link to="/PianoPage" style={{ textDecoration: "none" }}>
+              <div
+                className="pianoHeader"
+                style={{
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                <h3>بيانو</h3>
+              </div>
+            </Link>
+            <Link to="/OudPage" style={{ textDecoration: "none" }}>
+              <div
+                className="oudHeader"
+                style={{
+                  marginLeft: "20px",
+                  cursor: "pointer",
+                }}
+              >
+                <h3>عود</h3>
+              </div>
+            </Link>
+            <Link to="/ViolinPage" style={{ textDecoration: "none" }}>
+              <div
+                className="violinHeader"
+                style={{
+                  cursor: "pointer",
+                }}
+              >
+                <h3>كمان</h3>{" "}
+              </div>
+            </Link>
           </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {user ? (
+              <div>
+                {user.teacher ? (
+                  <Link to="/profile" style={{ textDecoration: "none" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img
+                        src={user.teacher.avatar}
+                        alt={user.teacher.firstName}
+                        style={{
+                          height: "40px",
+                          width: "40px",
+                          borderRadius: "50%",
+                          marginLeft: "10px",
+                          marginRight: "10px",
+                        }}
+                      />
+                      {user.teacher.firstName} {user.teacher.lastName}
+                    </div>
+                  </Link>
+                ) : (
+                  <Link to="/profile" style={{ textDecoration: "none" }}>
+                    <>
+                      <FontAwesomeIcon icon={faUser} /> {user.user.firstName}{" "}
+                      {user.user.lastName}
+                    </>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <div style={{ visibility: "hidden" }}>X</div>
+            )}
 
-          {user ? (
-            <div
-              className="auth"
-              style={{
-                border: "none",
-                height: "100%",
-                display: "flex",
-              }}
-            >
-              <Link to="/profile">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* <h4>
+            {/* <div>
+            <Link to="/">
+              <img
+                src="https://res.cloudinary.com/shhady/image/upload/v1666188610/avatars/wjph4gkbarqbnntmpcvw.jpg"
+                alt="logo"
+                className="logoImage"
+              />
+            </Link>
+          </div> */}
+
+            {user ? (
+              <div
+                className="auth"
+                style={{
+                  border: "none",
+                  height: "100%",
+                  display: "flex",
+                }}
+              >
+                <Link to="/profile">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* <h4>
                     {user.teacher ? user.teacher.lastName : user.user.lastName}
                   </h4> */}
-                  {/* <h4 style={{ marginRight: "5px" }}>
+                    {/* <h4 style={{ marginRight: "5px" }}>
                     {user.teacher
                       ? user.teacher.firstName
                       : user.user.firstName}
                   </h4> */}
-                  {"  "}
-                  {/* {user.teacher ? (
+                    {"  "}
+                    {/* {user.teacher ? (
                     <img
                       src={user.teacher ? user.teacher.avatar : "profile.jpg"}
                       alt={user.teacher?.image}
@@ -258,75 +381,48 @@ export default function Header({ user, setUser, socket }) {
                       <FontAwesomeIcon icon={faUser} />
                     </div>
                   )} */}
-                </div>
-              </Link>
-              {user.teacher ? (
-                // <div
-                //   style={{
-                //     display: "flex",
-                //     alignItems: "center",
-                //     justifyContent: "center",
-                //   }}
-                // >
-                //   <button
-                //     onClick={handleLogoutTeacher}
-                //     style={{
-                //       border: "none",
-                //       width: "10rem",
-                //       cursor: "pointer",
-                //     }}
-                //   >
-                //     خروج
-                //   </button>
-                <div
-                  style={{
-                    display: "flex",
-                    // flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // border: "1px solid gray",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                  }}
-                >
+                  </div>
+                </Link>
+                {user.teacher ? (
+                  // <div
+                  //   style={{
+                  //     display: "flex",
+                  //     alignItems: "center",
+                  //     justifyContent: "center",
+                  //   }}
+                  // >
+                  //   <button
+                  //     onClick={handleLogoutTeacher}
+                  //     style={{
+                  //       border: "none",
+                  //       width: "10rem",
+                  //       cursor: "pointer",
+                  //     }}
+                  //   >
+                  //     خروج
+                  //   </button>
                   <div
-                    onClick={handleLogoutTeacher}
                     style={{
                       display: "flex",
+                      // flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
                       // border: "1px solid gray",
-                      borderRadius: "5px",
-                      height: "30px",
-                      padding: "0px 5px ",
+                      borderRadius: "10px",
+                      cursor: "pointer",
                     }}
-                    className="logOutHeader"
                   >
                     <div
+                      onClick={handleLogoutTeacher}
                       style={{
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginLeft: "2px",
+                        marginRight: "10px",
+                        // border: "1px solid gray",
+                        borderRadius: "5px",
+                        height: "30px",
+                        padding: "0px 5px ",
                       }}
-                    >
-                      <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      خروج
-                    </div>
-                  </div>
-
-                  {user?.teacher?.role === "admin" ? (
-                    <Link
-                      to="/CreateTeacher"
-                      style={{ textDecoration: "none" }}
+                      className="logOutHeader"
                     >
                       <div
                         style={{
@@ -334,17 +430,45 @@ export default function Header({ user, setUser, socket }) {
                           flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "center",
-                          marginRight: "10px",
-                          // background: "#cdcaca",
-                          cursor: "pointer",
-                          height: "30px",
-                          padding: "0px 5px",
+                          marginLeft: "2px",
                         }}
-                        className="logOutHeader"
                       >
-                        تسجيل معلمين
+                        <FontAwesomeIcon icon={faArrowRightFromBracket} />{" "}
                       </div>
-                      {/* <button
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        خروج
+                      </div>
+                    </div>
+
+                    {user?.teacher?.role === "admin" ? (
+                      <Link
+                        to="/CreateTeacher"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: "10px",
+                            // background: "#cdcaca",
+                            cursor: "pointer",
+                            height: "30px",
+                            padding: "0px 5px",
+                          }}
+                          className="logOutHeader"
+                        >
+                          تسجيل معلمين
+                        </div>
+                        {/* <button
                         style={{
                           border: "none",
                           width: "10rem",
@@ -353,31 +477,80 @@ export default function Header({ user, setUser, socket }) {
                       >
                         تسجيل معلمين
                       </button> */}
-                    </Link>
-                  ) : null}
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    // border: "1px solid gray",
-                    // borderRadius: "10px",
-                    cursor: "pointer",
-                  }}
-                  className="logOutHeader"
-                >
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : (
                   <div
-                    onClick={handleLogoutStudent}
                     style={{
                       display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
                       // border: "1px solid gray",
-                      borderRadius: "10px",
+                      // borderRadius: "10px",
+                      cursor: "pointer",
+                      marginRight: "10px",
+                    }}
+                    className="logOutHeader"
+                  >
+                    <div
+                      onClick={handleLogoutStudent}
+                      style={{
+                        display: "flex",
+                        // border: "1px solid gray",
+                        borderRadius: "10px",
+                        height: "30px",
+                        padding: "3px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginLeft: "2px",
+                        }}
+                      >
+                        {" "}
+                        <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        خروج
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div
+                className="auth"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Link to="/auth" style={{ textDecoration: "none" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      // borderStyle: "outset",
+                      // border: "1px solid gray",
+                      // borderRadius: "5px",
                       height: "30px",
                       padding: "3px",
                     }}
+                    className="registerBox"
                   >
                     <div
                       style={{
@@ -385,11 +558,10 @@ export default function Header({ user, setUser, socket }) {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
-                        marginLeft: "2px",
+                        marginLeft: "3px",
                       }}
                     >
-                      {" "}
-                      <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                      <FontAwesomeIcon icon={faArrowRightToBracket} />
                     </div>
                     <div
                       style={{
@@ -399,59 +571,13 @@ export default function Header({ user, setUser, socket }) {
                         alignItems: "center",
                       }}
                     >
-                      خروج
+                      تسجيل الدخول
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div
-              className="auth"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Link to="/auth" style={{ textDecoration: "none" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    // borderStyle: "outset",
-                    // border: "1px solid gray",
-                    // borderRadius: "5px",
-                    height: "30px",
-                    padding: "3px",
-                  }}
-                  className="registerBox"
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginLeft: "3px",
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faArrowRightToBracket} />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    تسجيل الدخول
-                  </div>
-                </div>
-              </Link>
-            </div>
-          )}
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
         <div
           style={{
@@ -493,11 +619,11 @@ export default function Header({ user, setUser, socket }) {
                 <h3 className="headeroud">الدورات الموسيقية</h3>
               </div>
             </Link>
-            <Link to="Piano" style={{ textDecoration: "none" }}>
+            {/* <Link to="Piano" style={{ textDecoration: "none" }}>
               <div>
                 <h3 className="headerpiano">نوتات موسيقية</h3>
               </div>
-            </Link>
+            </Link> */}
             <Link to="" style={{ textDecoration: "none" }}>
               <div>
                 <h3 className="headerpiano">الاشتراك </h3>
@@ -512,8 +638,12 @@ export default function Header({ user, setUser, socket }) {
               position: "relative",
             }}
             onClick={() => {
+              if (uniques.length === 0) {
+                history.push("/messenger");
+              } else {
+                setOpenNotificationsMessage(!openNotificationsMessage);
+              }
               // history.push("/messenger");
-              setOpenNotificationsMessage(!openNotificationsMessage);
             }}
           >
             <FontAwesomeIcon icon={faMessage} />
@@ -549,13 +679,13 @@ export default function Header({ user, setUser, socket }) {
               position: "relative",
             }}
           >
-            <FontAwesomeIcon icon={faBell} />
+            <FontAwesomeIcon icon={faBell} onClick={clickOnBill} />
             {notificationNotification.length > 0 ? (
               <div
                 className="notificationNotification"
                 onClick={() => setOpenNotifications(!openNotifications)}
               >
-                {notificationNotification.length}
+                .
               </div>
             ) : null}
           </div>
@@ -563,7 +693,7 @@ export default function Header({ user, setUser, socket }) {
           {openNotifications ? (
             <div className="notification-container">
               {drawNotifications()}
-              <div
+              {/* <div
                 style={{
                   border: "1px solid gray",
                   background: "skyblue",
@@ -575,7 +705,7 @@ export default function Header({ user, setUser, socket }) {
                 }}
               >
                 حذف جميع الاشعارات
-              </div>
+              </div> */}
             </div>
           ) : null}
           {openMenu && (
@@ -595,11 +725,11 @@ export default function Header({ user, setUser, socket }) {
                   <h3 className="headeroud">الدورات الموسيقية</h3>
                 </div>
               </Link>
-              <Link to="Piano" style={{ textDecoration: "none" }}>
+              {/* <Link to="Piano" style={{ textDecoration: "none" }}>
                 <div onClick={() => setOpenMenu(!openMenu)}>
                   <h3 className="headerpiano">نوتات موسيقية</h3>
                 </div>
-              </Link>
+              </Link> */}
               <Link to="" style={{ textDecoration: "none" }}>
                 <div onClick={() => setOpenMenu(!openMenu)}>
                   <h3 className="headerpiano">الاشتراك </h3>

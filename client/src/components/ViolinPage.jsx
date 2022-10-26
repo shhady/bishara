@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 // import { Container, AppBar, Typography, Grow, Grid } from "@mui/material";
 // import logo from "./images/Logo.JPG";
 import "./PianoPage.css";
-import Oudvideo from "./Oudvideo";
+import Violinvideo from "./Violinvideo";
 import { Link } from "react-router-dom";
 // import PostsPiano from "./Posts/PostsPiano";
 // import Form from "./Form/FormPiano";
 // import { useDispatch } from "react-redux";
 // import { getPosts } from "../actions/posts";
-export default function OudPage({ user, setUser }) {
+export default function ViolinPage({ user, setUser }) {
   // const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -18,17 +18,17 @@ export default function OudPage({ user, setUser }) {
     <div className="mainContainer">
       <div className="first">
         <div>
-          <Oudvideo />
+          <Violinvideo />
         </div>
         <div className="firstContent">
-          <h2>دروس ودورات من أفضل عازفي العود في العالم.</h2>
+          <h2>دروس ودورات من أفضل عازفي الكمان في العالم.</h2>
           <div>
-            صقل أسسك ، وطور شغفك ، وحقق تقدمًا بتوجيهات من العقول الرائدة في عزف
-            العود.
+            صقل أسسك ، وطور شغفك ، وحقق تقدمًا بتوجيهات من العقول الرائدة في
+            الكمان الكلاسيكي.
           </div>
           {user ? (
             <Link to="/courses">
-              <button className="btn-PianoPage">الدورات </button>
+              <button className="btn-PianoPage">الدورات</button>
             </Link>
           ) : (
             <Link to="/Auth">
@@ -40,19 +40,19 @@ export default function OudPage({ user, setUser }) {
       <div className="second">
         <h2>يضم مدربين من مؤسسات ذات شهرة عالمية.</h2>
         <h4>
-          لقد استخدمنا العقول الرائدة في عزف العود لمساعدتك على التعلم وإحراز
-          تقدم أسرع.
+          لقد استخدمنا العقول الرائدة في الكمان الكلاسيكي لمساعدتك على التعلم
+          وإحراز تقدم أسرع.
         </h4>
       </div>
       <div className="third">
         <div className="learnFromTheBest"> جرب بنفسك</div>
         <div>
-          <h2>جرب دورات العود بدورات فن "دروس مجانية". </h2>
+          <h2>جرب دورات الكمان بدورات فن "دروس مجانية". </h2>
         </div>
         <div>
-          استمتع ببعض دروس العود الكلاسيكية الأكثر شهرة أدناه مجانًا. عندما تكون
-          مستعدًا للمزيد ، ابدأ تجربتك المجانية وقم بالوصول إلى أكثر من 500 درس
-          ودورة ومقابلات من أفضل عازفي البيانو في العالم!{" "}
+          استمتع ببعض دروس الكمان الكلاسيكية الأكثر شهرة أدناه مجانًا. عندما
+          تكون مستعدًا للمزيد ، ابدأ تجربتك المجانية وقم بالوصول إلى أكثر من 500
+          درس ودورة ومقابلات من أفضل عازفي الكمان في العالم!{" "}
         </div>
       </div>
       <div className="freeLessons">

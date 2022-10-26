@@ -12,6 +12,11 @@
     justify-content: space-between;
     align-items: center;
 }
+.courseContainer:hover{
+    background-color:rgb(237, 235, 235);
+    transition: ease .3s;
+    
+}
 .allCourses{
     width: 100%;
     border: 3px solid gray;
@@ -27,7 +32,7 @@
 }
 .showDataStyle{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
     margin-top: 10px;
 }

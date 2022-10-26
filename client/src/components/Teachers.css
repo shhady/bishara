@@ -1,7 +1,7 @@
 .teachersCards{
     margin-top: 150px;
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(5,1fr);
     gap: 1rem;
 }
 
@@ -10,8 +10,9 @@
     flex-direction: column;
     /* justify-content: space-around; */
     align-items: center;
-    border: 1px solid black
-
+    border: 1px solid black;
+    border-radius: 5px;
+    padding:3px
 }
 
 .loading{

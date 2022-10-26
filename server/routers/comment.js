@@ -22,6 +22,36 @@ router.get("/comments", async (req, res) => {
   }
 });
 
+router.patch("/comments/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdate = ["read"];
+  const isValidOperation = updates.every((update) => {
+    return allowedUpdate.includes(update);
+  });
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "invalid updates" });
+  }
+
+  try {
+    const comment = await Comment.findById(req.params.id);
+
+    updates.forEach((update) => (comment[update] = req.body[update]));
+    await comment.save();
+    // const practice = await practice.findByIdAndUpdate(req.params.id, req.body, {
+    //   new: true,
+    //   runValidators: true,
+    // });
+
+    if (!comment) {
+      res.status(404).send();
+    }
+    res.send(comment);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 router.put("/comments/:id", async (req, res) => {
   const reply = req.body.reply;
   const firstName = req.body.firstName;

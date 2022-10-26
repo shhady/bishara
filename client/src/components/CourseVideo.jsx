@@ -50,7 +50,7 @@ export default function CourseVideo({ chooseVideo, setChooseVideo, course }) {
             <video
               key={chooseVideo.url}
               controls
-              style={{ width: "100%", height: "370px", marginTop: "20px" }}
+              style={{ width: "100%", height: "370px", marginTop: "10px" }}
             >
               <source src={chooseVideo.url} type="video/mp4" />
             </video>

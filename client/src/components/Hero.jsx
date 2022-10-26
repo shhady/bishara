@@ -13,7 +13,7 @@ export default function Hero() {
           <h2> اختر الالة وابدأ التعلم الان:</h2>
         </div>
         <div className="cards">
-          <Link to="Piano" style={{ textDecoration: "none" }}>
+          <Link to="PianoPage" style={{ textDecoration: "none" }}>
             <div className="cardPiano">
               <div className="wcoverblack">
                 <div>
@@ -24,7 +24,7 @@ export default function Hero() {
               </div>
             </div>
           </Link>
-          <Link to="Oud" style={{ textDecoration: "none" }}>
+          <Link to="OudPage" style={{ textDecoration: "none" }}>
             <div className="cardOud">
               <div className="wcoverblack">
                 <div>
@@ -35,7 +35,7 @@ export default function Hero() {
               </div>
             </div>
           </Link>
-          <Link to="/" style={{ textDecoration: "none" }}>
+          <Link to="/ViolinPage" style={{ textDecoration: "none" }}>
             <div className="cardViolin">
               <div className="wcoverblack">
                 <div>
@@ -46,7 +46,7 @@ export default function Hero() {
               </div>
             </div>
           </Link>
-          <Link to="/" style={{ textDecoration: "none" }}>
+          {/* <Link to="/" style={{ textDecoration: "none" }}>
             <div className="cardPiano">
               <div className="wcoverblack">
                 <div>
@@ -56,7 +56,7 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

@@ -86,7 +86,7 @@ export default function Courses() {
     // const res = await axios.get(process.env.REACT_APP_BACKEND_URL+`/courses/${post._id}`);
     // console.log(res);
     setCourseData(post._id);
-    history.push({ pathname: "/course", id: post._id });
+    history.push({ pathname: `/course/${post._id}`, id: post._id });
     window.localStorage.setItem("courseId", post._id);
     window.localStorage.setItem("ownerId", post.owner);
     // window.localStorage.setItem("courseId", post.owner);
@@ -112,7 +112,7 @@ export default function Courses() {
           onClick={() => {
             handleClick(post);
           }}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", padding: "5px", borderRadius: "5px" }}
         >
           {post.firstName} {"  "}
           {post.lastName}
@@ -138,7 +138,7 @@ export default function Courses() {
           onClick={() => {
             handleClick(post);
           }}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", padding: "5px", borderRadius: "5px" }}
         >
           {post.firstName} {"  "}
           {post.lastName}

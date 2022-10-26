@@ -305,7 +305,11 @@ export default function Auth({ user, setUser }) {
                       alignItems: "center",
                     }}
                   >
-                    <button type="submit" onClick={handleloginStudent}>
+                    <button
+                      type="submit"
+                      style={{ width: "170px" }}
+                      onClick={handleloginStudent}
+                    >
                       دخول
                     </button>
                   </div>
@@ -317,7 +321,11 @@ export default function Auth({ user, setUser }) {
                       alignItems: "center",
                     }}
                   >
-                    <button type="submit" onClick={handleloginTeacher}>
+                    <button
+                      type="submit"
+                      style={{ width: "170px" }}
+                      onClick={handleloginTeacher}
+                    >
                       دخول
                     </button>
                   </div>

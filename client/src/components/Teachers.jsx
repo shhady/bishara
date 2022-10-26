@@ -128,7 +128,7 @@ export default function Teachers({ user, setUser }) {
               // }}
               onClick={() => handleClick(teacher)}
             >
-              chat
+              تحدث مع الاستاذ
             </button>
           </div>
         </div>

@@ -20,7 +20,7 @@ export default function Course() {
   const [test, setTest] = useState(true);
   const [buttonNew, setButtonNew] = useState([]);
   const [buttonName, setButtonName] = useState("");
-
+  const [markedButton, setMarkedButton] = useState(null);
   // const [submitComment, setSubmitComment] = useState("");
   // const [submittedText, setSubmitedText] = useState(null);
   // const [allComments, setAllComments] = useState(null);
@@ -121,6 +121,7 @@ export default function Course() {
     const chosenVideo = course?.videos.find(
       (obj) => obj.episode === episode.episode
     );
+    setMarkedButton(episode.episode);
     setChooseVideo(chosenVideo);
     window.localStorage.setItem("videoId", chosenVideo._id);
     window.localStorage.setItem("videoName", episode.episode);
@@ -130,12 +131,22 @@ export default function Course() {
     return course?.videos.map((episode, i) => {
       return (
         <div key={i}>
-          <button
-            className="buttonChooseVideo"
-            onClick={() => clickToOpenVideo(episode)}
-          >
-            {episode.episode}
-          </button>
+          {markedButton === episode.episode ? (
+            <button
+              className="buttonChooseVideo"
+              onClick={() => clickToOpenVideo(episode)}
+              style={{ backgroundColor: "grey" }}
+            >
+              {episode.episode}
+            </button>
+          ) : (
+            <button
+              className="buttonChooseVideo"
+              onClick={() => clickToOpenVideo(episode)}
+            >
+              {episode.episode}
+            </button>
+          )}
         </div>
       );
     });
@@ -266,7 +277,7 @@ export default function Course() {
           />
           <div
             style={{
-              marginTop: "20px",
+              marginTop: "10px",
             }}
           >
             {/* <Comment course={course} courseId={courseId} /> */}
