@@ -32,7 +32,7 @@ export default function Messenger({ user, setUser, socket }) {
         // createdAt: Date.now(),
       });
     });
-  }, [userId]);
+  }, [userId, socket]);
 
   useEffect(() => {
     arrivalMessage &&
@@ -66,7 +66,7 @@ export default function Messenger({ user, setUser, socket }) {
     socket?.on("getUsers", (users) => {
       console.log(users);
     });
-  }, [user.teacher, user.user]);
+  }, [user.teacher, user.user, socket]);
 
   useEffect(() => {
     const getMessages = async () => {

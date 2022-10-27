@@ -85,10 +85,7 @@ export default function Comment({ course, courseId, chooseVideo }) {
   }, [url]);
 
   useEffect(() => {
-    setSocket(
-      io()
-      // "ws://localhost:8900"
-    );
+    setSocket(io("ws://localhost:5000"));
     console.log(socket);
   }, []);
   useEffect(() => {

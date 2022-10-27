@@ -11,14 +11,27 @@ import messageRouter from "./routers/messages.js";
 import openconversationRouter from "./routers/openConversations.js";
 import commentRouter from "./routers/comment.js";
 import http from "http";
-// const socketio = require("socket.io");
 import { Server } from "socket.io";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-// io.listen(3000);
-// const io = socketio(server);
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:3000"],
+  },
+});
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+// io.on("connection", () => {
+//   console.log("connected to websocket");
+// });
 
 let users = [];
 const addUser = (userId, socketId) => {
@@ -89,9 +102,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// io.on("connection", () => {
-//   console.log("connected to websocket");
-// });
 app.use(cors());
 // app.use(express.json());
 app.use(express.json({ limit: "10mb" }));
