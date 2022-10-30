@@ -115,6 +115,7 @@ export default function Teachers({ user, setUser }) {
               alt={teacher.firstName}
               height="150px"
               width="150px"
+              style={{ borderRadius: "5px" }}
             />
           </div>
           <div>

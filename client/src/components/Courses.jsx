@@ -114,17 +114,26 @@ export default function Courses() {
           }}
           style={{ cursor: "pointer", padding: "5px", borderRadius: "5px" }}
         >
-          {post.firstName} {"  "}
-          {post.lastName}
-          <div>{post.instrument}</div>
-          <div>{post.level}</div>
           <img
             src={post.avatar}
             alt={post.firstName}
             width="150"
             height="150"
-            style={{ borderRadius: "50%" }}
+            style={{ borderRadius: "50%", marginBottom: "10px" }}
           />
+          <div>
+            المدرس:
+            {"  "} {post.firstName} {"  "}
+            {post.lastName}
+            <div>
+              الآلة:{"  "}
+              {post.instrument}
+            </div>
+            <div>
+              المستوى:{"  "}
+              {post.level}
+            </div>
+          </div>
         </div>
       );
     });
@@ -140,7 +149,7 @@ export default function Courses() {
           }}
           style={{ cursor: "pointer", padding: "5px", borderRadius: "5px" }}
         >
-          {post.firstName} {"  "}
+          {/* {post.firstName} {"  "}
           {post.lastName}
           <div>{post.instrument}</div>
           <div>{post.level}</div>
@@ -150,7 +159,27 @@ export default function Courses() {
             width="150"
             height="150"
             style={{ borderRadius: "50%" }}
+          /> */}
+          <img
+            src={post.avatar}
+            alt={post.firstName}
+            width="150"
+            height="150"
+            style={{ borderRadius: "50%", marginBottom: "10px" }}
           />
+          <div>
+            المدرس:
+            {"  "} {post.firstName} {"  "}
+            {post.lastName}
+            <div>
+              الآلة:{"  "}
+              {post.instrument}
+            </div>
+            <div>
+              المستوى:{"  "}
+              {post.level}
+            </div>
+          </div>
         </div>
       );
     });
@@ -236,7 +265,7 @@ export default function Courses() {
         </div>
         {/* </Link> */}
         {/* <Link to="/"> */}
-        <div
+        {/* <div
           // style={{
           //   border: "1px solid gray",
           //   display: "flex",

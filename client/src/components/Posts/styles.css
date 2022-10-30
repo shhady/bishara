@@ -18,8 +18,9 @@
     
 }
 .allCourses{
-    width: 100%;
+    width: 98%;
     border: 3px solid gray;
+    border-radius: 5px;
     /* border-bottom: 3px solid gray; */
     border-style: outset;
     display: flex;
@@ -41,13 +42,13 @@
   .coursesCss{
     margin-top: 150px;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
   }
   @media (max-width: 768px) {
     .coursesCss{
         display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     }
     .showDataStyle{
         display: grid;

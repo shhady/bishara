@@ -71,7 +71,12 @@ export default function CreateCourse() {
             type="text"
             defaultValue={firstName.current}
             name="firstName"
-            style={{ textAlign: "center", width: "60%" }}
+            style={{
+              textAlign: "center",
+              width: "60%",
+              marginBottom: "20px",
+              marginTop: "20px",
+            }}
 
             // onChange={handleChange}
           />
@@ -83,7 +88,12 @@ export default function CreateCourse() {
             // onChange={handleChange}
           />
           <select
-            style={{ textAlign: "center", width: "60%", marginTop: "20px" }}
+            style={{
+              textAlign: "center",
+              width: "60%",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
             onChange={(e) =>
               setCourse({ ...course, instrument: e.target.value })
             }
@@ -96,7 +106,7 @@ export default function CreateCourse() {
             <option value="قانون">قانون</option>
           </select>
           <select
-            style={{ textAlign: "center", width: "60%", marginTop: "20px" }}
+            style={{ textAlign: "center", width: "60%" }}
             onChange={(e) => setCourse({ ...course, level: e.target.value })}
             required
           >
@@ -120,12 +130,14 @@ export default function CreateCourse() {
         /> */}
           {/* <input type="file" name="videos" onChange={handleChangeVideos} /> */}
           <input
+            className="createCourseSubmit"
             type="submit"
             style={{
               textAlign: "center",
               width: "60%",
               marginBottom: "20px",
               cursor: "pointer",
+              marginTop: "20px",
             }}
             // onClick={() => setRefresh(!refresh)}
           />

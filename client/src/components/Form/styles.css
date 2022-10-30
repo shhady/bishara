@@ -8,3 +8,9 @@
     align-items:center;
     border: 1px solid black;
 }
+.createTeacherSubmit{
+    background-color:#3498db
+}
+.createTeacherSubmit:hover{
+    background-color:#2c3e50
+}

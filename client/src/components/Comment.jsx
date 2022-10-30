@@ -85,7 +85,7 @@ export default function Comment({ course, courseId, chooseVideo }) {
   }, [url]);
 
   useEffect(() => {
-    setSocket(io("ws://localhost:5000"));
+    setSocket(io("https://dawrafun1.herokuapp.com/"));
     console.log(socket);
   }, []);
   useEffect(() => {

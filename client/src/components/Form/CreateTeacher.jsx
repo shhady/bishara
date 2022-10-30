@@ -51,52 +51,57 @@ export default function CreateTeacher() {
         <div className="formCreateTeacher">
           <input
             name="firstName"
-            placeholder="firstName"
+            placeholder="First Name"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{
+              textAlign: "center",
+              width: "60%",
+              marginBottom: "20px",
+              marginTop: "20px",
+            }}
           />
           <input
             name="lastName"
-            placeholder="lastName"
+            placeholder="Last Name"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           <input
             name="instrument"
-            placeholder="instrument"
+            placeholder="Instrument"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           {/* <input name="image" type="file" required onChange={handleChange} /> */}
           <input
             name="email"
-            placeholder="email"
+            placeholder="Email"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           <input
             name="password"
-            placeholder="password"
+            placeholder="Password"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           <input
             name="confirmPassword"
-            placeholder="confirmPassword"
+            placeholder="Confirm Password"
             required
             onChange={handleChange}
-            style={{ textAlign: "center", width: "60%" }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           <textarea
             name="about"
-            placeholder="about"
+            placeholder="About"
             onChange={handleChange}
-            style={{ marginTop: "20px", textAlign: "center", width: "60% " }}
+            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
           />
           {/* <input type="file" onChange={handleAvatar} /> */}
           <FileBase
@@ -105,8 +110,19 @@ export default function CreateTeacher() {
             onDone={({ base64 }) => setTeacher({ ...teacher, avatar: base64 })}
           />
           <input
+            className="createTeacherSubmit"
             type="submit"
-            style={{ textAlign: "center", width: "60%", marginBottom: "20px" }}
+            style={{
+              textAlign: "center",
+              width: "60%",
+              height: "30px",
+              marginBottom: "20px",
+              marginTop: "20px",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "5px",
+              color: "white",
+            }}
           />
         </div>
       </form>

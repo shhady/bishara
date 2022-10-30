@@ -17,7 +17,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: process.env.Origin_Cors,
+    methods: ["GET", "POST"],
   },
 });
 import path from "path";
@@ -28,6 +29,10 @@ const __dirname = path.dirname(__filename);
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
+});
+
+app.get("/", (req, res) => {
+  res.send("backend is running");
 });
 // io.on("connection", () => {
 //   console.log("connected to websocket");
@@ -125,7 +130,7 @@ app.use(messageRouter);
 app.use(openconversationRouter);
 app.use(commentRouter);
 const CONNECTION_URL = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.vae8tj1.mongodb.net/?retryWrites=true&w=majority`;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>
