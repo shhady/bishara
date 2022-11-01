@@ -18,6 +18,7 @@ export default function StudentsPractices({ user }) {
     const formData = new FormData();
     formData.append("file", video);
     formData.append("upload_preset", "bisharaHaroni");
+    setPracticeId(practice._id);
     // formData.append("cloud_name", "shhady");
     axios
       .post("https://api.cloudinary.com/v1_1/shhady/upload", formData, {
@@ -28,7 +29,7 @@ export default function StudentsPractices({ user }) {
         },
       })
       .then((res) => setUrl(res.data.url))
-      .then(() => setPracticeId(practice._id))
+      // .then(() => setPracticeId(practice._id))
       // .then((data) => {
       //   (data.url);
       // })
@@ -41,12 +42,22 @@ export default function StudentsPractices({ user }) {
 
   const addTeacherVideoReply = (practice) => {
     const addTheVideo = async () => {
-      await axios.patch(
-        process.env.REACT_APP_BACKEND_URL + `/practices/${practice._id}`,
-        {
-          videoReply: url,
-        }
-      );
+      await axios
+        .patch(
+          process.env.REACT_APP_BACKEND_URL + `/practices/${practice._id}`,
+          {
+            videoReply: url,
+          }
+        )
+        .then(async () => {
+          const res = await axios.get(
+            process.env.REACT_APP_BACKEND_URL + `/practices`
+          );
+          const filterData = res.data.filter(
+            (practice) => practice.teacherId === userId
+          );
+          setTeacherPractices(filterData);
+        });
     };
     addTheVideo();
     setUrl(null);
@@ -148,18 +159,39 @@ export default function StudentsPractices({ user }) {
           <div>
             الدرس:
             {practice.video}
-            <br />
-            التمرين:
           </div>
           <div>
-            <div>
-              <video
-                key={practice.myPractice}
-                controls
-                style={{ width: "100%", height: "250px" }}
-              >
-                <source src={practice.myPractice} type="video/mp4" />
-              </video>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "10px",
+              }}
+            >
+              <div>
+                <span> التمرين:</span>
+                <video
+                  key={practice.myPractice}
+                  controls
+                  style={{ width: "100%", height: "250px" }}
+                >
+                  <source src={practice.myPractice} type="video/mp4" />
+                </video>
+              </div>
+              <div>
+                {practice.videoReply ? (
+                  <>
+                    <span>رد المعلم</span>
+                    <video
+                      key={practice.videoReply}
+                      controls
+                      style={{ width: "100%", height: "250px" }}
+                    >
+                      <source src={practice.videoReply} type="video/mp4" />
+                    </video>
+                  </>
+                ) : null}
+              </div>
             </div>
             <div>
               {/* {practice.reply && showLastReply ? (
@@ -227,7 +259,15 @@ export default function StudentsPractices({ user }) {
                   <div>
                     {practiceId === practice._id ? (
                       <div className="SendVideoReply">
-                        <div style={{ minWidth: "70px" }}>
+                        <div
+                          style={{
+                            minWidth: "70px",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-end",
+                            alignItems: "center",
+                          }}
+                        >
                           {fileUpload && (
                             <span style={{ textAlign: "center" }}>
                               {" "}
@@ -236,7 +276,14 @@ export default function StudentsPractices({ user }) {
                           )}
                         </div>
                         {url ? (
-                          <div>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
                             <button
                               onClick={() => addTeacherVideoReply(practice)}
                               className="btnSendVideoReply"

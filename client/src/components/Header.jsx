@@ -232,7 +232,8 @@ export default function Header({ user, setUser, socket }) {
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "flex-start",
+              paddingRight: "20px",
               alignItems: "center",
             }}
           >
@@ -339,6 +340,7 @@ export default function Header({ user, setUser, socket }) {
                   border: "none",
                   height: "100%",
                   display: "flex",
+                  paddingLeft: "20px",
                 }}
               >
                 <Link to="/profile">
@@ -438,6 +440,7 @@ export default function Header({ user, setUser, socket }) {
                       <div
                         style={{
                           display: "flex",
+                          // paddingRight: "20px",
                           flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "center",
@@ -549,6 +552,7 @@ export default function Header({ user, setUser, socket }) {
                       // borderRadius: "5px",
                       height: "30px",
                       padding: "3px",
+                      color: "black",
                     }}
                     className="registerBox"
                   >
@@ -569,6 +573,7 @@ export default function Header({ user, setUser, socket }) {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
+                        marginLeft: "20px",
                       }}
                     >
                       تسجيل الدخول
@@ -595,7 +600,7 @@ export default function Header({ user, setUser, socket }) {
         </div>
         <div className="header-down">
           <div className="Menu-message">
-            <div></div>
+            {/* <div></div> */}
             <div
               className="menuMobile"
               style={{
@@ -614,11 +619,20 @@ export default function Header({ user, setUser, socket }) {
                 <h3 className="headeroud">المدرسين</h3>
               </div>
             </Link>
-            <Link to="/courses" style={{ textDecoration: "none" }}>
-              <div>
-                <h3 className="headeroud">الدورات الموسيقية</h3>
-              </div>
-            </Link>
+            {user ? (
+              <Link to="/courses" style={{ textDecoration: "none" }}>
+                <div>
+                  <h3 className="headeroud">الدورات الموسيقية</h3>
+                </div>
+              </Link>
+            ) : (
+              <Link to="/auth" style={{ textDecoration: "none" }}>
+                <div>
+                  <h3 className="headeroud">الدورات الموسيقية</h3>
+                </div>
+              </Link>
+            )}
+
             {/* <Link to="Piano" style={{ textDecoration: "none" }}>
               <div>
                 <h3 className="headerpiano">نوتات موسيقية</h3>
@@ -630,27 +644,29 @@ export default function Header({ user, setUser, socket }) {
               </div>
             </Link>
           </div>
-          <div
-            style={{
-              padding: "2px",
-              border: "1px solid white",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            onClick={() => {
-              if (uniques.length === 0) {
-                history.push("/messenger");
-              } else {
-                setOpenNotificationsMessage(!openNotificationsMessage);
-              }
-              // history.push("/messenger");
-            }}
-          >
-            <FontAwesomeIcon icon={faMessage} />
-            {uniques.length > 0 ? (
-              <div className="notificationMessage">{uniques.length}</div>
-            ) : null}
-          </div>
+          {user ? (
+            <div
+              style={{
+                padding: "2px",
+                border: "1px solid white",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              onClick={() => {
+                if (uniques.length === 0) {
+                  history.push("/messenger");
+                } else {
+                  setOpenNotificationsMessage(!openNotificationsMessage);
+                }
+                // history.push("/messenger");
+              }}
+            >
+              <FontAwesomeIcon icon={faMessage} />
+              {uniques.length > 0 ? (
+                <div className="notificationMessage">{uniques.length}</div>
+              ) : null}
+            </div>
+          ) : null}
 
           {openNotificationsMessage ? (
             <div className="notificationMessage-container">
@@ -670,25 +686,28 @@ export default function Header({ user, setUser, socket }) {
               </div>
             </div>
           ) : null}
-
-          <div
-            style={{
-              padding: "2px",
-              border: "1px solid white",
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            <FontAwesomeIcon icon={faBell} onClick={clickOnBill} />
-            {notificationNotification.length > 0 ? (
-              <div
-                className="notificationNotification"
-                onClick={() => setOpenNotifications(!openNotifications)}
-              >
-                .
-              </div>
-            ) : null}
-          </div>
+          {user ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                paddingLeft: "20px",
+                border: "1px solid white",
+                cursor: "pointer",
+                position: "relative",
+              }}
+            >
+              <FontAwesomeIcon icon={faBell} onClick={clickOnBill} />
+              {notificationNotification.length > 0 ? (
+                <div
+                  className="notificationNotification"
+                  onClick={() => setOpenNotifications(!openNotifications)}
+                >
+                  .
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           {openNotifications ? (
             <div className="notification-container">
