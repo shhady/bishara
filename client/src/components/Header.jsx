@@ -27,6 +27,12 @@ export default function Header({ user, setUser, socket }) {
     useState(false);
   const [backNot, setBackNot] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [notificationNumber, setNotificationNumber] = useState([]);
+
+  useEffect(() => {
+    setNotificationNumber(backNot.filter((number) => number.read === false));
+  }, [backNot]);
+
   useEffect(() => {
     if (!user) return;
     user.teacher ? setUserId(user.teacher._id) : setUserId(user.user._id);
@@ -43,21 +49,24 @@ export default function Header({ user, setUser, socket }) {
     };
     comments();
   }, [userId]);
-  console.log(backNot);
+  console.log(backNot.filter((comment) => comment.read === false));
 
   const clickOnBill = () => {
     setOpenNotifications(!openNotifications);
-    setNotificationNotification([]);
+    // setNotificationNotification([]);
+    console.log("bill clicked");
+  };
+  console.log(openNotifications);
+
+  useEffect(() => {
     const comments = async () => {
       const result = await axios.get(
         process.env.REACT_APP_BACKEND_URL + `/comments/`
       );
-      setBackNot(
-        result.data.filter((comment) => comment.courseOwnerId === userId)
-      );
+      setBackNot(result.data);
     };
     comments();
-  };
+  }, []);
   // useEffect(() => {
   //   setSocket(io("http://localhost:8900"));
   //   console.log(socket);
@@ -105,6 +114,7 @@ export default function Header({ user, setUser, socket }) {
     setUser(null);
     setNotificationNotification([]);
     setNotificationMessage([]);
+    setOpenNotifications(false);
   };
 
   const handleLogoutStudent = async () => {
@@ -145,14 +155,15 @@ export default function Header({ user, setUser, socket }) {
             read: true,
           }
         )
-        .then(async () => {
-          const result = await axios.get(
-            process.env.REACT_APP_BACKEND_URL + `/comments/`
-          );
-          setBackNot(
-            result.data.filter((comment) => comment.courseOwnerId === userId)
-          );
-        })
+        // .then(async () => {
+        //   const result = await axios.get(
+        //     process.env.REACT_APP_BACKEND_URL + `/comments/`
+        //   );
+        //   console.log(result);
+        //   setBackNot(
+        //     result.data.filter((comment) => comment.courseOwnerId === userId)
+        //   );
+        // })
         .then(window.localStorage.setItem("courseId", notification.theCourse))
         .then(history.push({ pathname: `/course/${notification.theCourse}` }))
         .then(window.location.reload());
@@ -197,7 +208,7 @@ export default function Header({ user, setUser, socket }) {
         );
       });
   };
-
+  console.log(backNot);
   const uniques = notificationMessage
     .map((obj) => {
       return obj.userName;
@@ -233,7 +244,7 @@ export default function Header({ user, setUser, socket }) {
             style={{
               display: "flex",
               justifyContent: "flex-start",
-              paddingRight: "20px",
+              paddingRight: "15px",
               alignItems: "center",
             }}
           >
@@ -601,17 +612,21 @@ export default function Header({ user, setUser, socket }) {
         <div className="header-down">
           <div className="Menu-message">
             {/* <div></div> */}
-            <div
-              className="menuMobile"
-              style={{
-                // textAlign: "center",
-                // border: "1px solid gray",
-                padding: "2px",
-              }}
-              onClick={() => setOpenMenu(!openMenu)}
-            >
-              {!openMenu ? <FontAwesomeIcon icon={faBars} /> : "X اغلاق"}{" "}
-            </div>
+            {user ? (
+              <>
+                <div
+                  className="menuMobile"
+                  style={{
+                    // textAlign: "center",
+                    // border: "1px solid gray",
+                    padding: "2px",
+                  }}
+                  onClick={() => setOpenMenu(!openMenu)}
+                >
+                  {!openMenu ? <FontAwesomeIcon icon={faBars} /> : "X اغلاق"}{" "}
+                </div>
+              </>
+            ) : null}
           </div>
           <div className="menu-details-computer">
             <Link to="/teachers" style={{ textDecoration: "none" }}>
@@ -696,36 +711,22 @@ export default function Header({ user, setUser, socket }) {
                 cursor: "pointer",
                 position: "relative",
               }}
+              onClick={clickOnBill}
             >
-              <FontAwesomeIcon icon={faBell} onClick={clickOnBill} />
-              {notificationNotification.length > 0 ? (
+              <FontAwesomeIcon icon={faBell} />
+              {notificationNumber.length > 0 ? (
                 <div
                   className="notificationNotification"
-                  onClick={() => setOpenNotifications(!openNotifications)}
+                  // onClick={() => setOpenNotifications(!openNotifications)}
                 >
-                  .
+                  {notificationNumber.length}
                 </div>
               ) : null}
             </div>
           ) : null}
 
           {openNotifications ? (
-            <div className="notification-container">
-              {drawNotifications()}
-              {/* <div
-                style={{
-                  border: "1px solid gray",
-                  background: "skyblue",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setOpenNotifications(!openNotifications);
-                  setNotificationNotification([]);
-                }}
-              >
-                حذف جميع الاشعارات
-              </div> */}
-            </div>
+            <div className="notification-container">{drawNotifications()}</div>
           ) : null}
           {openMenu && (
             <div className="menu-details">
@@ -744,11 +745,6 @@ export default function Header({ user, setUser, socket }) {
                   <h3 className="headeroud">الدورات الموسيقية</h3>
                 </div>
               </Link>
-              {/* <Link to="Piano" style={{ textDecoration: "none" }}>
-                <div onClick={() => setOpenMenu(!openMenu)}>
-                  <h3 className="headerpiano">نوتات موسيقية</h3>
-                </div>
-              </Link> */}
               <Link to="" style={{ textDecoration: "none" }}>
                 <div onClick={() => setOpenMenu(!openMenu)}>
                   <h3 className="headerpiano">الاشتراك </h3>
@@ -756,11 +752,6 @@ export default function Header({ user, setUser, socket }) {
               </Link>
             </div>
           )}
-          {/* <div className="menuMobile">
-            {" "}
-            <FontAwesomeIcon icon={faBars} />
-            القائمة
-          </div> */}
         </div>
       </div>
     </div>
